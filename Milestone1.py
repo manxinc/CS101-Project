@@ -1,6 +1,7 @@
 """Milestone1 Script
 """
 import itertools
+from functools import reduce
 
 genetic_code = {
     'UUU': 'F', 'UUC': 'F', 'UUA': 'L', 'UUG': 'L', 'CUU': 'L', 'CUC': 'L', 'CUA': 'L', 'CUG': 'L',
@@ -14,6 +15,7 @@ genetic_code = {
 }
  
 
+#Haocen Xie
 def s(dna):
     Dict = {}
     count_A = count_C = count_G = count_T = 0
@@ -35,6 +37,7 @@ def s(dna):
     return Dict
 
 
+#Haocen Xie
 def dna2rna(dna):
     rna = ''
     for letter in dna:
@@ -45,6 +48,7 @@ def dna2rna(dna):
     return rna
 
 
+#Haocen Xie
 def reverse_complement(dna):
     reverse = ''
     for i in dna:
@@ -60,6 +64,7 @@ def reverse_complement(dna):
     return reverse
 
 
+#Haocen Xie
 def mendels_law(hom,het,rec):
     sum = hom + het + rec
     reces = (rec/sum)*((rec-1)/(sum-1))
@@ -69,6 +74,7 @@ def mendels_law(hom,het,rec):
     return result
 
 
+#Haocen Xie
 def fibonacci_rabbits(n, k):
     f_1, f_2 = 1, 1
     for i in range(n - 1):
@@ -76,31 +82,81 @@ def fibonacci_rabbits(n, k):
     return f_2
 
 
+#Manxin Chen
 def GC_content(dna_list):
-    stats = [(seq.count('C')+seq.count('G'))/len(seq) for seq in dna_list]
-    index = max(range(len(stats)), key = lambda i:stats[i])
+    stats = [
+    (seq.count('C')+seq.count('G'))/len(seq)                    
+    for seq in dna_list                                         
+    ]
+    index = max(range(len(stats)), key = lambda i:stats[i])     
     return (index, 100*stats[index])
 
 
+#Manxin Chen
 def rna2codon(rna):
-    return ''.join(
-        itertools.takewhile(
-            lambda i: i != 'Stop',
-            [genetic_code[rna[i:i+3]] for i in range(0, len(rna), 3)]
-        )
-    )
+    codon = []                                                  
+    for i in range(0, len(rna), 3):                             
+    	if genetic_code[rna[i:i+3]] == 'Stop':                  
+    		break
+    	codon.append(genetic_code[rna[i:i+3]])                  
+    return ''.join(codon)
 
 
-
-def locate_substring(dna_snippet, dna):
+#Manxin Chen
+def locate_substring(dna_snippet, dna):                     
     return [
-        i for i in range(len(dna)-len(dna_snippet))
-        if dna[i:i+len(dna_snippet)] == dna_snippet
+        i for i in range(len(dna)-len(dna_snippet))             
+        if dna[i:i+len(dna_snippet)] == dna_snippet             
     ]
 
 
 
+#Manxin Chen
 def hamming_dist(dna1, dna2):
-    return sum( dna2[i] != dna1[i] for i in range(0,len(dna1)))
+    return sum( dna2[i] != dna1[i] for i in range(0,len(dna1))) 
 
 
+#Manxin Chen
+def source_rna(protein):
+    rna = []                                                    
+    for i in protein:                                          
+        rna.append(
+            [v for v,k in genetic_code.items()                 
+            if k==i]                                            
+            )
+    rna.append(
+        [v for v,k in genetic_code.items() if k == 'Stop']      
+        )
+    return reduce(lambda x,y: x*y,[len(i) for i in rna])        
+
+
+#Ali
+def count_dom_phenotype(genotypes):
+    offspring = 0
+
+    for i in range(len(genotypes)):
+
+        if i == 0:
+            offspring = (genotypes[0]*2*1)
+        elif i == 1:
+            offspring += (genotypes[1]*2*1)
+        elif i == 2:
+            offspring += (genotypes[2]*2*1)
+        elif i == 3:
+            offspring += (genotypes[3]*2*0.75)
+        elif i == 4:
+            offspring += (genotypes[4]*2*0.5)
+        elif i == 5:
+            offspring += (genotypes[4]*2*0)
+        else:
+            return print('String is too long')
+    return offspring
+
+
+#Ali
+def splice_rna(dna, intron_list):
+    for i in intron_list:
+        dna = dna.replace(i,"")
+        
+    rna = dna.replace("T","U")
+    return rna2codon(rna)
